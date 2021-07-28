@@ -207,7 +207,7 @@ void GameManager::draw() const
     for (auto it = _playedCards.begin(); it != _playedCards.end(); ++it)
     {
         if(*it)
-            std::cout << *it << " ";
+            std::cout << **it << " ";
         else
             std::cout << "[ ] ";
     }
