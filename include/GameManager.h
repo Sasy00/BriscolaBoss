@@ -20,7 +20,7 @@ private:
     Card *_briscola;
     std::vector<std::vector<Card>> _hands;
     std::vector<std::vector<Card>> _collected;
-    std::vector<Card> _playedCards;
+    std::vector<Card *> _playedCards;
 
     int _action;
 };
