@@ -219,7 +219,8 @@ void GameManager::draw() const
         else
             std::cout << "[ ] ";
     }
-    std::cout << std::endl;
+    std::cout << std::endl
+              << std::endl;
 }
 
 void GameManager::getInput()
