@@ -18,10 +18,12 @@ void Deck::reset()
 void Deck::shuffle()
 {
     srand(time(0));
-    for (int i = _cards.size() - 1; i > 0; ++i)
+    for (int i = _cards.size() - 1; i > 0; --i)
     {
         int index = rand() % (i + 1);
-        std::iter_swap(_cards.begin() + index, _cards.begin() + i);
+        Card a = _cards[index];
+        _cards[index] = _cards[i];
+        _cards[i] = a;
     }
 }
 
