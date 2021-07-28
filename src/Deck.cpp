@@ -24,3 +24,10 @@ void Deck::shuffle()
         std::iter_swap(_cards.begin() + index, _cards.begin() + i);
     }
 }
+
+Card Deck::draw()
+{
+    Card ret = _cards.back();
+    _cards.pop_back();
+    return ret;
+}
