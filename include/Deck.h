@@ -10,7 +10,7 @@ public:
     Deck();
     void reset();
     void shuffle();
-    Card draw(int n);
+    Card draw();
 private:
     std::vector<Card> _cards;
 };
