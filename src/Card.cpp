@@ -39,3 +39,9 @@ int Card::getValue() const
         break;
     }
 }
+
+std::ostream &operator<<(std::ostream& os, Card c)
+{
+    char suit = '\2' + c.getSuit();    
+    return os << c.getRank() << suit;
+}
