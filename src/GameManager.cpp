@@ -163,7 +163,7 @@ bool GameManager::update()
                 for (int i = 0; i < _nPlayers; ++i)
                 {
                     sum[i] = 0;
-                    std::cout << "Cards collected by Player" << i << ": ";
+                    std::cout << "Cards collected by Player " << i << ": ";
                     for (auto it = _collected[i].begin(); it != _collected[i].end(); ++it)
                     {
                         std::cout << *it << " ";
