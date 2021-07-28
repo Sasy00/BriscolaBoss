@@ -12,7 +12,7 @@ public:
     void shuffle();
     Card draw(int n);
 private:
-    std::vector<Card *> _cards;
+    std::vector<Card> _cards;
 };
 
 #endif
