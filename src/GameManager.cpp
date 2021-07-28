@@ -17,12 +17,20 @@ void GameManager::init()
     _deck.reset();
     _deck.shuffle();
 
+    delete _briscola;
     _briscola = new Card(_deck.draw());
 
     _hands.clear();
     for (int i = 0; i < _nPlayers; ++i)
     {
         _hands.push_back(std::vector<Card>());
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < _nPlayers; ++j)
+        {
+            _hands[j].push_back(_deck.draw());
+        }
     }
 
     _collected.clear();
@@ -31,22 +39,23 @@ void GameManager::init()
         _collected.push_back(std::vector<Card>());
     }
 
-    _playedCards.clear();
-
-    for (int i = 0; i < 3; ++i)
+    for(auto it = _playedCards.begin(); it!= _playedCards.end(); ++it)
     {
-        for (int j = 0; j < _nPlayers; ++j)
-        {
-            _hands[j].push_back(_deck.draw());
-        }
+        delete *it;
     }
+    _playedCards.clear();
+    for(int i = 0;  i < _nPlayers; ++i)
+    {
+        _playedCards.push_back(nullptr);
+    }
+
     _currentPlayer = rand() % _nPlayers;
 }
 
 void GameManager::update()
 {
     draw();
-    //getInput();
+    getInput();
 }
 
 void GameManager::draw() const
@@ -65,7 +74,31 @@ void GameManager::draw() const
     std::cout << "Played Cards: ";
     for (auto it = _playedCards.begin(); it != _playedCards.end(); ++it)
     {
-        std::cout << *it << " ";
+        if(*it)
+            std::cout << *it << " ";
+        else
+            std::cout << "[ ] ";
     }
     std::cout << std::endl;
+}
+
+void GameManager::getInput()
+{
+
+    bool ok = false;
+    while (!ok)
+    {
+        ok = true;
+        std::cout << "Player " << _currentPlayer << ", select a card: ";
+        std::cin >> _action;
+        try
+        {
+            _hands[_currentPlayer].at(_action);
+        }
+        catch (std::out_of_range const &exc)
+        {
+            ok = false;
+            std::cout << "Index not valid. Please insert a valid number." << std::endl;
+        }
+    }
 }
