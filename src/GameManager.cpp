@@ -67,6 +67,7 @@ bool GameManager::update()
     }
     if (end)
     {
+        std::cout << std::endl;
         std::cout << "Briscola: " << *_briscola << std::endl;
         std::cout << "Played cards: ";
         for (int i = 0; i < _nPlayers; ++i)
@@ -112,7 +113,8 @@ bool GameManager::update()
             }
         }
         //strongest calculated
-        std::cout << "Player " << strongest << "gets all the cards" << std::endl;
+        std::cout << "Player " << strongest << " gets all the cards" << std::endl;
+        std::cout << std::endl;
         //next round first player is the strongest of this round.
         _currentPlayer = strongest;
         //strongest gets all the cards played in this round
@@ -121,10 +123,11 @@ bool GameManager::update()
             //copies card into the card collected by the strongest
             _collected[strongest].push_back(*(_playedCards[i]));
             delete _playedCards[i];
+            _playedCards[i] = nullptr;
         }
         //everyone draws a card
-        int i = strongest;
-        int howManyDraws = 4;
+        int i = 0;
+        int howManyDraws = _nPlayers;
 
         if (_deck.size() != 0)
         {
@@ -159,6 +162,7 @@ bool GameManager::update()
                 int *sum = new int[_nPlayers];
                 for (int i = 0; i < _nPlayers; ++i)
                 {
+                    sum[i] = 0;
                     std::cout << "Cards collected by Player" << i << ": ";
                     for (auto it = _collected[i].begin(); it != _collected[i].end(); ++it)
                     {
@@ -167,16 +171,16 @@ bool GameManager::update()
                     }
                     std::cout << std::endl;
                 }
-                std::cout << "POINTS";
-                for(int i = 0; i < _nPlayers; ++i)
+                std::cout << "POINTS" << std::endl;
+                for (int i = 0; i < _nPlayers; ++i)
                 {
                     std::cout << "Player " << i << ": " << sum[i] << std::endl;
                 }
                 int winner = 0;
                 int max = sum[0];
-                for(int i = 1; i < _nPlayers; ++i)
+                for (int i = 1; i < _nPlayers; ++i)
                 {
-                    if(sum[i] > max)
+                    if (sum[i] > max)
                     {
                         winner = i;
                         max = sum[i];
@@ -186,6 +190,10 @@ bool GameManager::update()
                 return true;
             }
         }
+    }
+    else
+    {
+        _currentPlayer = (_currentPlayer + 1) % _nPlayers;
     }
     return false;
 }
@@ -206,7 +214,7 @@ void GameManager::draw() const
     std::cout << "Played Cards: ";
     for (auto it = _playedCards.begin(); it != _playedCards.end(); ++it)
     {
-        if(*it)
+        if (*it)
             std::cout << **it << " ";
         else
             std::cout << "[ ] ";
