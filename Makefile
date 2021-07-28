@@ -1,5 +1,5 @@
-_DEPS = Card.h
-_OBJ = main.o Card.o
+_DEPS = Card.h Deck.h
+_OBJ = main.o Card.o Deck.o
 TARGET = BriscolaBoss
 
 IDIR = ./include
