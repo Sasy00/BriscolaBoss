@@ -8,7 +8,7 @@ class GameManager
 public:
     GameManager(int nPlayers);
     void init();
-    void update();
+    bool update();
     ~GameManager();
 private:
     void getInput();

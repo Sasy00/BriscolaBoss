@@ -39,12 +39,12 @@ void GameManager::init()
         _collected.push_back(std::vector<Card>());
     }
 
-    for(auto it = _playedCards.begin(); it!= _playedCards.end(); ++it)
+    for (auto it = _playedCards.begin(); it != _playedCards.end(); ++it)
     {
         delete *it;
     }
     _playedCards.clear();
-    for(int i = 0;  i < _nPlayers; ++i)
+    for (int i = 0; i < _nPlayers; ++i)
     {
         _playedCards.push_back(nullptr);
     }
@@ -52,10 +52,142 @@ void GameManager::init()
     _currentPlayer = rand() % _nPlayers;
 }
 
-void GameManager::update()
+bool GameManager::update()
 {
     draw();
     getInput();
+    _playedCards[_currentPlayer] = new Card(_hands[_currentPlayer][_action]);
+    _hands[_currentPlayer].erase(_hands[_currentPlayer].begin() + _action);
+
+    //check if round is ended
+    bool end = true;
+    for (int i = 0; i < _nPlayers && end; ++i)
+    {
+        end = _playedCards[i] != nullptr;
+    }
+    if (end)
+    {
+        std::cout << "Briscola: " << *_briscola << std::endl;
+        std::cout << "Played cards: ";
+        for (int i = 0; i < _nPlayers; ++i)
+        {
+            std::cout << *(_playedCards[i]) << " ";
+        }
+        int firstPlayer = (_currentPlayer + 1) % _nPlayers;
+        int strongest = firstPlayer;        //by default
+        for (int i = 0; i < _nPlayers; ++i) //for each player
+        {
+            if (i != strongest) //for each not strongest player
+            {
+                //if different suits
+                if (_playedCards[i]->getSuit() != _playedCards[strongest]->getSuit())
+                {
+                    //if player suit is briscola suit then he is the strongest
+                    if (_playedCards[i]->getSuit() == _briscola->getSuit())
+                    {
+                        strongest = i;
+                    }
+                    //else strongest is still strongest
+                }
+                //if same suit
+                else
+                {
+                    //if value of i is more than the value of strongest
+                    if (_playedCards[i]->getValue() > _playedCards[strongest]->getValue())
+                    {
+                        strongest = i;
+                    }
+                    //if same value
+                    if (_playedCards[i]->getValue() == _playedCards[strongest]->getValue())
+                    {
+                        //rank wins
+                        if (_playedCards[i]->getRank() > _playedCards[strongest]->getRank())
+                        {
+                            strongest = i;
+                        }
+                        //else strongest is still strongest, since ranks of same suit cannot be equal
+                    }
+                    //else strongest is still strongest because more value in same suit
+                }
+            }
+        }
+        //strongest calculated
+        std::cout << "Player " << strongest << "gets all the cards" << std::endl;
+        //next round first player is the strongest of this round.
+        _currentPlayer = strongest;
+        //strongest gets all the cards played in this round
+        for (int i = 0; i < _nPlayers; ++i)
+        {
+            //copies card into the card collected by the strongest
+            _collected[strongest].push_back(*(_playedCards[i]));
+            delete _playedCards[i];
+        }
+        //everyone draws a card
+        int i = strongest;
+        int howManyDraws = 4;
+
+        if (_deck.size() != 0)
+        {
+            //if last round
+            if (_deck.size() == _nPlayers - 1)
+            {
+                //last to draw draws briscola
+                _hands[(strongest + _nPlayers - 1) % _nPlayers].push_back(*_briscola);
+                //since the last to draw has already drawn, one less has to draw
+                howManyDraws--;
+            }
+            while (i < howManyDraws)
+            {
+                _hands[(strongest + i) % _nPlayers].push_back(_deck.draw());
+                i++;
+            }
+        }
+        else //deck.size == 0
+        {
+            //check if game is ended
+            bool stillEnd = true;
+            for (int i = 0; i < _nPlayers && stillEnd; ++i)
+            {
+                for (int j = 0; j < 3 && stillEnd; ++j)
+                {
+                    stillEnd = _hands[i].size() == 0;
+                }
+            }
+
+            if (stillEnd) //game has ended
+            {
+                int *sum = new int[_nPlayers];
+                for (int i = 0; i < _nPlayers; ++i)
+                {
+                    std::cout << "Cards collected by Player" << i << ": ";
+                    for (auto it = _collected[i].begin(); it != _collected[i].end(); ++it)
+                    {
+                        std::cout << *it << " ";
+                        sum[i] += it->getValue();
+                    }
+                    std::cout << std::endl;
+                }
+                std::cout << "POINTS";
+                for(int i = 0; i < _nPlayers; ++i)
+                {
+                    std::cout << "Player " << i << ": " << sum[i] << std::endl;
+                }
+                int winner = 0;
+                int max = sum[0];
+                for(int i = 1; i < _nPlayers; ++i)
+                {
+                    if(sum[i] > max)
+                    {
+                        winner = i;
+                        max = sum[i];
+                    }
+                }
+                std::cout << "Player " << winner << " wins!" << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void GameManager::draw() const
