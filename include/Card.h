@@ -14,7 +14,7 @@ public:
 
 private:
     // 0 <= _id <= 39
-    const int _id;
+    int _id;
 };
 
 #endif
