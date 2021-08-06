@@ -1,2 +1,2 @@
-# BriscolaBoss
-Ai examples for playing Briscola like a boss
+# BriscolaBoss WIP
+Multiplayer Briscola, with the idea of making it a playground for testing AIs. 
