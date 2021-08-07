@@ -51,9 +51,16 @@ namespace Networking
         int recv(char *recvbuf, int recvbuflen);
 
         /**
-         * 
+         * @brief sends data in recvbuf to this socket host.
+         * @param sendbuf: data buffer
+         * @param sendbuf: size of data buffer
+         * @returns size of the packet sent in bytes if no errors, -1 if errors, check cerr for error text.
          */
-        int send(char *recvbuf, int recvbuflen);
+        int send(char *sendbuf, int sendbuflen);
+        /**
+         * @brief connects to this socket.
+         * @returns 0 if no errors, 1 if error, check cerr for error text.
+         */ 
         int connect();
         int close();
         int shutdown(int how);
