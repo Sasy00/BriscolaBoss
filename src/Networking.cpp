@@ -136,3 +136,21 @@ int Networking::TCPSocket::send(char *sendbuf, int sendbuflen)
     }
     return iResult;
 }
+
+int Networking::TCPSocket::connect()
+{
+    int iResult = ::connect(sock, info->ai_addr, info->ai_addrlen);
+    if(iResult == SOCKET_ERROR)
+    {
+        closesocket(sock);
+        sock = INVALID_SOCKET;
+        freeaddrinfo(info);
+    }
+    if(sock == INVALID_SOCKET)
+    {
+        std::cerr << "Error, cannot connect to server: " << std::endl;
+        return 1;
+    }
+    
+    return 0;
+}
