@@ -126,3 +126,13 @@ int Networking::TCPSocket::recv(char *recvbuf, int recvbuflen)
     }
     return iResult;
 }
+
+int Networking::TCPSocket::send(char *sendbuf, int sendbuflen)
+{
+    int iResult = ::send(sock, sendbuf, sendbuflen, 0);
+    if(iResult == SOCKET_ERROR)
+    {
+        std::cerr << "send failed: " << WSAGetLastError() << std::endl;
+    }
+    return iResult;
+}
