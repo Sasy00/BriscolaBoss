@@ -7,7 +7,7 @@ int Networking::initNetworking()
     int iResult = WSAStartup(MAKEWORD(2, 2), &wsadata);
     if (iResult != 0)
     {
-        std::cout << "WSAStartup failed: " << iResult;
+        std::cerr << "WSAStartup failed: " << iResult;
         return 1;
     }
     return 0;
@@ -58,14 +58,14 @@ int Networking::TCPSocket::createSocket(char *ip, char *port)
     iResult = getaddrinfo(ip, port, &hints, &info);
     if (iResult != 0)
     {
-        std::cout << "getaddrinfo failed: " << iResult << std::endl;
+        std::cerr << "getaddrinfo failed: " << iResult << std::endl;
         return 1;
     }
 
     sock = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
     if (sock == INVALID_SOCKET)
     {
-        std::cout << "Error at socket(): " << WSAGetLastError() << std::endl;
+        std::cerr << "Error at socket(): " << WSAGetLastError() << std::endl;
         return 1;
     }
     return 0;
@@ -80,7 +80,7 @@ int Networking::TCPSocket::bind()
     int iResult = ::bind(sock, info->ai_addr, (int)info->ai_addrlen);
     if (iResult == SOCKET_ERROR)
     {
-        std::cout << "bind failed with error: %d\n"
+        std::cerr << "bind failed with error: %d\n"
                   << WSAGetLastError() << std::endl;
         return 1;
     }
@@ -95,7 +95,7 @@ int Networking::TCPSocket::listen(int backlog = SOMAXCONN)
     int iResult = ::listen(sock, backlog);
     if (iResult == SOCKET_ERROR)
     {
-        std::cout << "Listen failed with error: " << WSAGetLastError() << std::endl;
+        std::cerr << "Listen failed with error: " << WSAGetLastError() << std::endl;
         return 1;
     }
     return 0;
@@ -117,4 +117,12 @@ Networking::TCPSocket Networking::TCPSocket::accept()
 #endif
 }
 
-
+int Networking::TCPSocket::recv(char *recvbuf, int recvbuflen)
+{
+    int iResult = ::recv(sock, recvbuf, recvbuflen, 0);
+    if(iResult < 0)
+    {
+        std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
+    }
+    return iResult;
+}
