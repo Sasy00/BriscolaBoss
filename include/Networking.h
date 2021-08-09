@@ -6,7 +6,6 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#pragma comment(lib, "Ws2_32.lib")
 #else
 //#include <socket.h>
 #endif
@@ -29,7 +28,7 @@ namespace Networking
          * @param port: port of the server.
          * @returns 0 if no errors, 1 if errors. Check cerr for error text
          */
-        int createSocket(char *ip, char *port);
+        int createSocket(const char *ip, const char *port);
 
         /**
          * @brief binds the socket
@@ -62,7 +61,7 @@ namespace Networking
          * @param sendbuf: size of data buffer
          * @returns size of the packet sent in bytes if no errors, -1 if errors, check cerr for error text.
          */
-        int send(char *sendbuf, int sendbuflen);
+        int send(const char *sendbuf, int sendbuflen);
 
         /**
          * @brief connects to this socket.
@@ -83,7 +82,7 @@ namespace Networking
          */
         int shutdown(MODE how);
 
-        inline static const char *DEFAULT_PORT = "8080";
+        static const char *DEFAULT_PORT;
         static const int DEFAULT_BUFLEN = 512;
 
     private:

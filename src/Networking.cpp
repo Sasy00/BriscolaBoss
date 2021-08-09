@@ -25,6 +25,8 @@ int Networking::cleanup()
 #endif
 }
 
+const char *Networking::TCPSocket::DEFAULT_PORT = "8080";
+
 Networking::TCPSocket::TCPSocket() : sock(INVALID_SOCKET), info(nullptr)
 {
 }
@@ -42,7 +44,7 @@ Networking::TCPSocket::~TCPSocket()
 #endif
 }
 
-int Networking::TCPSocket::createSocket(char *ip, char *port)
+int Networking::TCPSocket::createSocket(const char *ip, const char *port)
 {
 #ifdef _WIN32
     addrinfo hints;
@@ -125,6 +127,7 @@ int Networking::TCPSocket::recv(char *recvbuf, int recvbuflen)
     int iResult = ::recv(sock, recvbuf, recvbuflen, 0);
     if (iResult < 0)
     {
+        std::cerr << "iResult: " << iResult << std::endl;
         std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     }
     return iResult;
@@ -132,7 +135,7 @@ int Networking::TCPSocket::recv(char *recvbuf, int recvbuflen)
 #endif
 }
 
-int Networking::TCPSocket::send(char *sendbuf, int sendbuflen)
+int Networking::TCPSocket::send(const char *sendbuf, int sendbuflen)
 {
 #ifdef _WIN32
     int iResult = ::send(sock, sendbuf, sendbuflen, 0);
@@ -184,7 +187,7 @@ int Networking::TCPSocket::close()
 int Networking::TCPSocket::shutdown(Networking::MODE how)
 {
 #ifdef _WIN32
-    int iResult = ::shutdown(sock, how);
+    int iResult = ::shutdown(sock, static_cast<int>(how));
     if (iResult != 0)
     {
         std::cerr << "Error on shutdown: " << WSAGetLastError() << std::endl;
