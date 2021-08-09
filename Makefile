@@ -7,7 +7,11 @@ SDIR = ./src
 ODIR = ./out
 
 CXX = g++
-CXX_FLAGS = -Wall -I$(IDIR)
+CXX_FLAGS = -Wall -I$(IDIR) -g
+
+ifeq ($(OS), Windows_NT)
+	CXX_FLAGS += -lWs2_32
+endif
 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
