@@ -12,6 +12,12 @@
 #endif
 namespace Networking
 {
+    enum MODE
+    {
+        RECEIVE = 0,
+        SEND = 1,
+        BOTH = 2
+    };
     class TCPSocket
     {
     public:
@@ -57,13 +63,25 @@ namespace Networking
          * @returns size of the packet sent in bytes if no errors, -1 if errors, check cerr for error text.
          */
         int send(char *sendbuf, int sendbuflen);
+
         /**
          * @brief connects to this socket.
          * @returns 0 if no errors, 1 if error, check cerr for error text.
-         */ 
+         */
         int connect();
+
+        /**
+         * @brief Shuts down connection and destroys socket.
+         * @returns 1 if error on close, 0 if no errors, check cerr for error text 
+         */
         int close();
-        int shutdown(int how);
+
+        /**
+         * @brief shuts down connection one way or both ways without destroying socket
+         * @param how: what is being shut down
+         * @returns 1 if error on shutdown, 0 if no errors, check cerr for error text
+         */
+        int shutdown(MODE how);
 
         inline static const char *DEFAULT_PORT = "8080";
         static const int DEFAULT_BUFLEN = 512;
