@@ -1,5 +1,5 @@
-_DEPS = Card.h Deck.h GameState.h GameManager.h
-_OBJ = main.o Card.o Deck.o GameState.o GameManager.o
+_DEPS = Card.h Deck.h GameState.h GameManager.h Networking.h
+_OBJ = main.o Card.o Deck.o GameState.o GameManager.o Networking.o
 TARGET = BriscolaBoss
 
 IDIR = ./include
