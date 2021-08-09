@@ -169,10 +169,25 @@ int Networking::TCPSocket::connect()
 int Networking::TCPSocket::close()
 {
 #ifdef _WIN32
-    int iResult = closesocket(sock);
+    int iResult = shutdown(BOTH);
+    iResult = closesocket(sock);
     if (iResult != 0)
     {
         std::cerr << "Error on close: " << WSAGetLastError() << std::endl;
+        return 1;
+    }
+    return 0;
+#else
+#endif
+}
+
+int Networking::TCPSocket::shutdown(Networking::MODE how)
+{
+#ifdef _WIN32
+    int iResult = ::shutdown(sock, how);
+    if (iResult != 0)
+    {
+        std::cerr << "Error on shutdown: " << WSAGetLastError() << std::endl;
         return 1;
     }
     return 0;
