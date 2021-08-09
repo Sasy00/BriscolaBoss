@@ -37,7 +37,9 @@ Networking::TCPSocket::TCPSocket(SOCKET s) : sock(s), info(nullptr)
 
 Networking::TCPSocket::~TCPSocket()
 {
+#ifdef _WIN32
     freeaddrinfo(info);
+#endif
 }
 
 int Networking::TCPSocket::createSocket(char *ip, char *port)
@@ -119,38 +121,61 @@ Networking::TCPSocket Networking::TCPSocket::accept()
 
 int Networking::TCPSocket::recv(char *recvbuf, int recvbuflen)
 {
+#ifdef _WIN32
     int iResult = ::recv(sock, recvbuf, recvbuflen, 0);
-    if(iResult < 0)
+    if (iResult < 0)
     {
         std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     }
     return iResult;
+#else
+#endif
 }
 
 int Networking::TCPSocket::send(char *sendbuf, int sendbuflen)
 {
+#ifdef _WIN32
     int iResult = ::send(sock, sendbuf, sendbuflen, 0);
-    if(iResult == SOCKET_ERROR)
+    if (iResult == SOCKET_ERROR)
     {
         std::cerr << "send failed: " << WSAGetLastError() << std::endl;
     }
     return iResult;
+#else
+#endif
 }
 
 int Networking::TCPSocket::connect()
 {
+#ifdef _WIN32
     int iResult = ::connect(sock, info->ai_addr, info->ai_addrlen);
-    if(iResult == SOCKET_ERROR)
+    if (iResult == SOCKET_ERROR)
     {
         closesocket(sock);
         sock = INVALID_SOCKET;
         freeaddrinfo(info);
     }
-    if(sock == INVALID_SOCKET)
+    if (sock == INVALID_SOCKET)
     {
         std::cerr << "Error, cannot connect to server: " << std::endl;
         return 1;
     }
-    
+
     return 0;
+#else
+#endif
+}
+
+int Networking::TCPSocket::close()
+{
+#ifdef _WIN32
+    int iResult = closesocket(sock);
+    if (iResult != 0)
+    {
+        std::cerr << "Error on close: " << WSAGetLastError() << std::endl;
+        return 1;
+    }
+    return 0;
+#else
+#endif
 }
